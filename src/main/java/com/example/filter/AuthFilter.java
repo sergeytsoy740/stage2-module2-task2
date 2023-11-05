@@ -11,14 +11,19 @@ public class AuthFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
 
-        HttpSession session = ((HttpServletRequest) req).getSession(true);
+        HttpSession session = ((HttpServletRequest) req).getSession();
 
-        String user = (String) session.getAttribute("user");
-        if (user == null) {
+        if (session == null) {
             req.getRequestDispatcher("/login.jsp").forward(req, resp);
         } else {
-            if (chain != null) {
-                chain.doFilter(req, resp);
+
+            String user = (String) session.getAttribute("user");
+            if (user == null) {
+                req.getRequestDispatcher("/login.jsp").forward(req, resp);
+            } else {
+                if (chain != null) {
+                    chain.doFilter(req, resp);
+                }
             }
         }
     }
